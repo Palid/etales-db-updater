@@ -1,5 +1,7 @@
 import { Command, flags } from "@oclif/command";
+import { resolve } from "path";
 
+import { existsSync } from "fs";
 class EtalesDbUpdater extends Command {
   static description = "describe the command here";
 
@@ -8,20 +10,20 @@ class EtalesDbUpdater extends Command {
     version: flags.version({ char: "v" }),
     help: flags.help({ char: "h" }),
     // flag with a value (-n, --name=VALUE)
-    name: flags.string({ char: "n", description: "name to print" }),
+    map: flags.string({ char: "m", description: "path to w3c map" }),
+    updatedVersion: flags.string({ char: "u", description: "new map version" }),
     // flag with no value (-f, --force)
     force: flags.boolean({ char: "f" }),
   };
 
-  static args = [{ name: "file" }];
+  static args = [{ name: "mapPath" }];
 
   async run() {
-    const { args, flags } = this.parse(EtalesDbUpdater);
+    const { args } = this.parse(EtalesDbUpdater);
 
-    const name = flags.name ?? "world";
-    this.log(`hello ${name} from ./src/index.ts`);
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`);
+    const mapPath = resolve(args.mapPath);
+    if (!existsSync(mapPath)) {
+      this.error(`Provided path to the map of ${args.mapPath} does not exist.`);
     }
   }
 }
