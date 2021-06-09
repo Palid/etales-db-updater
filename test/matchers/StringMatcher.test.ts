@@ -1,6 +1,10 @@
 import { expect } from "chai";
 
-import { StringMatcher, WC3String } from "../../src/matchers/StringMatcher";
+import {
+  matchSingleString,
+  matchStringsLines,
+  WC3String,
+} from "../../src/matchers/StringMatcher";
 
 const tNoComment = `STRING 4
 {
@@ -12,31 +16,43 @@ const t1 = `STRING 574
 {
 You will receive a special gift
 }`;
-// const t2 = `STRING 575
-// // Abilities: A069 (Static Wave), Researchubertip (Tooltip - Learn - Extended)
-// {
-// Sends a lightning ball to damage enemies.
-// }`;
-// const t3 = `STRING 576
-// // Abilities: A069 (Static Wave), Tip (Tooltip - Normal)
-// {
-// Static |cffffcc00W|rave - [|cffffcc00Level 10|r]
-// }`;
-// const t5 = `STRING 577
-// // Abilities: A073 (Static Wave), Ubertip (Tooltip - Normal - Extended)
-// {
-// Sends a lightning ball to deals <A073,DataA1> damage to each enemy unit in a cone.
-// }`;
-// const t6 = `STRING 578
-// // Items: I00D (|cffff8c00Legendary Chest|r), Ubertip (Tooltip - Extended)
-// {
-// You will receive a special gift
-// }`;
+const t3 = `
+STRING 402
+// Abilities: A06K (Thief Abilities), Ubertip (Tooltip - Normal - Extended)
+{
+All skills from previous class are available on level 10.
+}
+
+STRING 403
+// Doodads: D028 (Borderwall), Name (Name)
+{
+Borderwall
+}
+
+STRING 404
+// Doodads: D029 (piso), Name (Name)
+{
+piso
+}
+
+STRING 405
+// Destructibles: B00G (invi), Name (Name)
+{
+invi
+}
+
+STRING 406
+// Units: h009 (Villager citizen), Name (Name)
+{
+Villager citizen
+}
+
+`;
 
 describe("StringMatcher", () => {
   it("should match strings correctly for a stringline with comment", () => {
-    const match = StringMatcher.match(t1);
-    const stringMatcher = new WC3String(match!);
+    const matched = matchSingleString(t1);
+    const stringMatcher = new WC3String(matched);
     expect(stringMatcher.text).to.equal("You will receive a special gift");
     expect(stringMatcher.stringId).to.equal(574);
     expect(stringMatcher.object).not.to.equal(undefined);
@@ -45,10 +61,15 @@ describe("StringMatcher", () => {
   });
 
   it("should match strings correctly for a stringline without comment", () => {
-    const match = StringMatcher.match(tNoComment);
-    const stringMatcher = new WC3String(match!);
+    const matched = matchSingleString(tNoComment);
+    const stringMatcher = new WC3String(matched);
     expect(stringMatcher.text).to.equal("Enthashara´s Tales ORPG  v1.3.4");
     expect(stringMatcher.stringId).to.equal(4);
     expect(stringMatcher.object).to.equal(undefined);
+  });
+
+  it("should properly match unparsed strings as a list", () => {
+    const matched = matchStringsLines(t3);
+    expect(matched.length).to.equal(6);
   });
 });

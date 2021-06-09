@@ -1,6 +1,5 @@
 import { groupBy } from "lodash/fp";
 import { Line } from "./Line";
-import { Matcher, Matchers } from "./Matcher";
 
 export type ParsedWC3String = {
   id: number;
@@ -91,7 +90,7 @@ function parseId(stringWithId: string): number {
   return parseInt(stringWithId.replace("STRING ", ""), 10);
 }
 
-function match(wc3String: string): ParsedWC3String {
+export function matchSingleString(wc3String: string): ParsedWC3String {
   const lines = wc3String.split("\n");
   // Has comment
   if (lines.length === 5) {
@@ -109,29 +108,18 @@ function match(wc3String: string): ParsedWC3String {
   };
 }
 
-export const StringMatcher: Matcher<ParsedWC3String, WC3String> = {
-  name: "strings",
-  match: (line: string) => match(line),
-  getId: (line: Line<WC3String>) => String(line.data!.stringId),
-  factory(matched: ParsedWC3String) {
-    return new WC3String(matched);
-  },
-};
-
 export function matchStringsLines(strings: string): Line<WC3String>[] {
-  const matchers = new Matchers<ParsedWC3String>();
-  matchers.register<WC3String>(StringMatcher);
-  const splitStrings = strings.split("\r\n\r\n");
+  // Normalize line endings
+  const splitStrings = strings.replaceAll("\r\n", "\n").split("\n\n");
+
   return splitStrings
-    .map((lines) => matchers.match(lines))
+    .map((line) =>
+      new Line<WC3String>(line, "war3map.wts").setData(
+        new WC3String(matchSingleString(line))
+      )
+    )
     .filter((x) => x) as Line<WC3String>[];
 }
-
-type HumanReadableItem = {
-  id: string;
-  description: string;
-  name: string;
-};
 
 function getValue(lines: Line<WC3String>[] = []) {
   if (lines.length > 0) {
@@ -153,24 +141,24 @@ type ItemObject = {
   ubertip: string;
 };
 
-export function formatStringsDataDump(items: Line<WC3String>[]) {
+export function formatItems(items: Line<WC3String>[]) {
   const grouped = groupBy((i: Line<WC3String>) => i?.data?.object?.id)(items);
   const group = groupBy((line: Line<WC3String>) =>
     line.data?.object?.where.replace(/ (\(.*\))/, "").toLowerCase()
   );
   const keys = Object.keys(grouped);
-  const result: Record<string, Partial<ItemObject>> = {};
+  const map = new Map<string, Partial<ItemObject>>();
   for (const key of keys) {
     const items = grouped[key];
     const labelGrouped = group(items);
     const { name, description, ubertip } = labelGrouped;
-    result[key] = {
+    map.set(key, {
       name:
         getValue(name) ||
         getDefaultName(description) ||
         getDefaultName(ubertip),
       description: getValue(description) || getValue(ubertip),
-    };
+    });
   }
-  return result;
+  return map;
 }

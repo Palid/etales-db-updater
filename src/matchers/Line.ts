@@ -12,6 +12,7 @@ export class Line<DataType extends unknown> {
 
   setData(data: DataType) {
     this.data = data;
+    return this;
   }
 
   toJSON() {
