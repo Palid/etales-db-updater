@@ -12,6 +12,8 @@ const files = {
   units: "war3map.w3u",
 };
 
+// TODO: Create an MVP wc3 map for testing purposes
+
 export async function read(pathToMap: string) {
   const dir = dirname(pathToMap);
   const fileName = basename(pathToMap);
