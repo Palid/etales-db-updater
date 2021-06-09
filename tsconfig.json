@@ -8,10 +8,6 @@
     "strict": true,
     "target": "esnext",
     "baseUrl": "./src",
-    "paths": {
-      "$matchers/*": ["./src/matchers/*"],
-      "$src/*": ["./*"]
-    },
     "composite": true
   },
   "include": ["src/**/*.ts"]
