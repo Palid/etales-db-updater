@@ -1,13 +1,11 @@
-import { registerCache, set } from "../Cache";
 import { Line } from "./Line";
 
 export interface Matcher<LineMatch extends unknown, DataType extends unknown> {
   name: string;
   match: (line: string) => LineMatch | null;
   factory: (matches: LineMatch) => DataType;
-  cacheKey?: string;
+  cacheKey: string;
   getId: (line: Line<DataType>) => string;
-  softCache?: boolean;
 }
 
 export class Matchers<LineMatch extends unknown> {
@@ -17,30 +15,29 @@ export class Matchers<LineMatch extends unknown> {
     matcher: Matcher<LineMatch, DataType>
   ): void {
     this.matchers.push(matcher);
-    if (matcher.cacheKey) {
-      registerCache(matcher.cacheKey, Boolean(matcher.softCache));
-    }
   }
 
   registerAll(matchers: Matcher<LineMatch, any>[]): void {
     matchers.forEach((x) => this.register(x));
   }
 
-  match(line: string): Line<unknown> | undefined {
+  match(lines: string[]) {
+    const matcherResults = new Map<string, Map<string, Line<unknown>>>();
     for (const matcher of this.matchers) {
-      const matched = matcher.match(line);
-      if (matched !== null) {
-        const item = new Line(line, matcher.name);
-        const matcherDataObject = matcher.factory(matched);
-        item.setData(matcherDataObject);
-        if (matcher.cacheKey) {
-          set(matcher.cacheKey, matcher.getId(item), item);
-        }
-        if (item instanceof Line) {
-          return item;
+      const matchedData = new Map<string, Line<unknown>>();
+      matcherResults.set(matcher.name, matchedData);
+      for (const line of lines) {
+        const matched = matcher.match(line);
+        if (matched !== null) {
+          const item = new Line(line, matcher.name);
+          const matcherDataObject = matcher.factory(matched);
+          item.setData(matcherDataObject);
+          if (item instanceof Line) {
+            matchedData.set(matcher.getId(item), item);
+          }
         }
       }
     }
-    return undefined;
+    return matcherResults;
   }
 }
