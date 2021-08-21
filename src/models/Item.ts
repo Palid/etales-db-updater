@@ -1,7 +1,5 @@
 import { groupBy } from "lodash/fp";
-import { collection } from "typesaurus";
 
-import { IDS_MAPPING } from "./War3Types";
 import { ParsedMapData } from "./ParsedMapData";
 import { ItemDropData } from "../matchers/jass/ItemDropMatcher";
 import { Line } from "../matchers/Line";
@@ -25,8 +23,6 @@ export interface Item extends Record<string, any> {
   dropsBy: DropBy[];
 }
 
-type ItemRecord = Partial<Item>;
-
 type JassifiedItemDrop = {
   jassUnitId: string;
   jassItemId: string;
@@ -35,7 +31,7 @@ type JassifiedItemDrop = {
 
 const groupFormattedItems = groupBy((x: JassifiedItemDrop) => x.jassItemId);
 
-interface ItemDropWithProperIds extends DropBy {
+export interface ItemDropWithProperIds extends DropBy {
   itemId: string;
 }
 
@@ -88,48 +84,3 @@ export function getItemDropsMapByItemId(
   }
   return dropsByItemId;
 }
-
-export function getItemsMapById(
-  parsedMapData: ParsedMapData
-): Map<string, ItemRecord> {
-  const items = new Map<string, ItemRecord>();
-  for (const item of parsedMapData.mpq.items.customObjects) {
-    const id = item.newID;
-    const newItem: ItemRecord = {
-      id,
-    };
-    const modifications = new Map<string, string | number>();
-    for (const modification of item.modifications) {
-      const mapped = IDS_MAPPING[modification.id];
-      if (mapped) {
-        const { name, mapper } = mapped;
-        modifications.set(
-          name,
-          mapper(modification.value, parsedMapData.strings)
-        );
-      }
-    }
-
-    for (const [k, v] of modifications.entries()) {
-      const key = k as keyof Item;
-      switch (key) {
-        case "icon":
-          newItem[key] = (v as string).replace(
-            "ReplaceableTextures\\CommandButtons\\BTNVillagerMan1.blp",
-            ""
-          );
-          break;
-        default:
-          newItem[key] = v;
-          break;
-      }
-    }
-    items.set(id, newItem);
-  }
-
-  return items;
-}
-
-export const FirebaseItemsCollection = collection<Partial<Item>>("items");
-export const FirebaseItemDropsByIdCollection =
-  collection<ItemDropWithProperIds[]>("itemDropByItemId");

@@ -4,7 +4,7 @@ import { Matcher } from "./Matcher";
 
 export type GameObjectData = {
   name: string;
-  id: number;
+  id: string;
   objectId: string;
   level?: number;
 };
@@ -42,7 +42,7 @@ export function gameObjectFactory(matches: RegExpMatchArray): GameObjectData {
     .join(" ");
   return {
     name: objectName,
-    id: parseInt(id, 10),
+    id: id,
     objectId: objectId.replaceAll("'", ""),
     level,
   };
