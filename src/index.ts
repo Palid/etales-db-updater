@@ -1,3 +1,5 @@
+import './env'
+
 import { Command, flags } from "@oclif/command";
 import { resolve } from "path";
 
@@ -11,6 +13,7 @@ import {
 import { ParsedMapData } from "./models/ParsedMapData";
 import { initFirebase } from "./firebase/firebase";
 import { set } from "typesaurus";
+
 
 class EtalesDbUpdater extends Command {
   static description =
@@ -29,7 +32,7 @@ class EtalesDbUpdater extends Command {
 
   static args = [{ name: "mapPath" }];
 
-  private IS_DEBUG = false;
+  private IS_DEBUG = process.env.debug !== undefined || false;
 
   async run() {
     const { args, flags } = this.parse(EtalesDbUpdater);
@@ -43,7 +46,7 @@ class EtalesDbUpdater extends Command {
 
     const { read } = await import('./mpq-reader')
 
-    const mpq = await read(mapPath);
+  const mpq = await read(mapPath);
     const parsedMapData = new ParsedMapData(mpq);
 
     const items = getItemsMapById(parsedMapData);
@@ -60,7 +63,7 @@ class EtalesDbUpdater extends Command {
         }
       });
       for (const [id, items] of itemDropsByItemId.entries()) {
-        set(FirebaseItemDropsByIdCollection, id, items);
+        set(FirebaseItemDropsByIdCollection, id, [...items.map(x => ({...x}))]);
       }
     }
   }

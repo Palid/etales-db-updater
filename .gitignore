@@ -17,3 +17,4 @@ mapfile
 firebase-secret.json
 
 tsconfig.tsbuildinfo
+.env

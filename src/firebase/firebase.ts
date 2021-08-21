@@ -1,5 +1,3 @@
-// import * as firebase from "firebase/app";
-// import "firebase/firestore";
 import * as admin from "firebase-admin";
 import { readFileSync } from "fs";
 import { join } from "path";
