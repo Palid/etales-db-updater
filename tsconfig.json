@@ -8,7 +8,8 @@
     "strict": true,
     "target": "esnext",
     "baseUrl": "./src",
-    "composite": true
+    "composite": true,
+    "strictNullChecks": true
   },
   "include": ["src/**/*.ts"]
 }
