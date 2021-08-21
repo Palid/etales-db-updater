@@ -1,4 +1,5 @@
 {
+  "parser": "@typescript-eslint/parser",
   "extends": ["oclif", "oclif-typescript", "prettier"],
   "rules": {
     "unicorn/prefer-spread": 0,
