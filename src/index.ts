@@ -53,7 +53,7 @@ class EtalesDbUpdater extends Command {
     const itemDropsByItemId = getItemDropsMapByItemId(parsedMapData);
 
     // Don't save data to firebase if we're in the tests environment
-    if (process.env.TESTING !== "1") {
+    if (process.env.TESTING === undefined) {
       this.log("Initializing firestore.");
       initFirebase();
       this.log("Writing all the items to the firestore.");
