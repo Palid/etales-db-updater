@@ -1,4 +1,4 @@
-import { Line } from "./Line";
+import { Line } from "../Line";
 import { Matcher } from "./Matcher";
 
 // As of save informations, the data table for items is below
@@ -21,24 +21,28 @@ import { Matcher } from "./Matcher";
  * UNO_DROP - 0.5%
  * MINIMO_DROP - 0.1%
  */
-// const dropRates = [0.2, 0.15, 0.1, 0.07, 0.03, 0.01, 0.005, 0.001];
-
+export interface ItemDrop {
+  itemId: string;
+  rate: number;
+}
+export type ItemDrops = [
+  ItemDrop,
+  ItemDrop,
+  ItemDrop,
+  ItemDrop,
+  ItemDrop,
+  ItemDrop,
+  ItemDrop,
+  ItemDrop
+];
 export type ItemDropData = {
-  unitId: number;
-  twenty: number;
-  fifteen: number;
-  ten: number;
-  seven: number;
-  three: number;
-  one: number;
-  half: number;
-  tenth: number;
+  unitId: string;
+  drops: ItemDrops;
 };
 
 const dropRe = /call SetUnitDrop ?\((\d+ *, *)+\d+\)/g;
 export const ItemDropMatcher: Matcher<RegExpMatchArray, ItemDropData> = {
   name: "itemDrop",
-  cacheKey: "itemDrop",
   getId: (line: Line<ItemDropData>) => line.data!.unitId.toString(),
   match: (line) => line.match(dropRe),
   factory: (matches) => {
@@ -46,21 +50,43 @@ export const ItemDropMatcher: Matcher<RegExpMatchArray, ItemDropData> = {
     const allMatches = Array.from(line.matchAll(/(\d+)/g));
     const ids = allMatches.map(([id]) => id);
     const [unitId, twenty, fifteen, ten, seven, three, one, half, tenth] = ids;
-    const values = {
-      unitId,
-      twenty,
-      fifteen,
-      ten,
-      seven,
-      three,
-      one,
-      half,
-      tenth,
-    } as any;
-    const keys = Object.keys(values);
-    for (const key of keys) {
-      values[key] = parseInt(values[key], 10);
-    }
+    const values: ItemDropData = {
+      unitId: unitId,
+      drops: [
+        {
+          itemId: twenty,
+          rate: 0.2,
+        },
+        {
+          itemId: fifteen,
+          rate: 0.15,
+        },
+        {
+          itemId: ten,
+          rate: 0.1,
+        },
+        {
+          itemId: seven,
+          rate: 0.07,
+        },
+        {
+          itemId: three,
+          rate: 0.03,
+        },
+        {
+          itemId: one,
+          rate: 0.01,
+        },
+        {
+          itemId: half,
+          rate: 0.005,
+        },
+        {
+          itemId: tenth,
+          rate: 0.001,
+        },
+      ],
+    };
     return values;
   },
 };

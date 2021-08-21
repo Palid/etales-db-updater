@@ -162,3 +162,13 @@ export function formatItems(items: Line<WC3String>[]) {
   }
   return map;
 }
+
+export function getStringsById(strings: Line<WC3String>[]) {
+  const map = new Map<number, string>();
+  for (const line of strings) {
+    if (line.data) {
+      map.set(line.data.stringId, line.data.text);
+    }
+  }
+  return map;
+}

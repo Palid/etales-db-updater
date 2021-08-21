@@ -12,9 +12,12 @@
     "@oclif/config": "^1.17.0",
     "@oclif/plugin-help": "^3.2.2",
     "@wowserhq/stormjs": "^0.4.1",
+    "firebase": "^8.7.1",
+    "firebase-admin": "^9.10.0",
     "long": "^4.0.0",
     "seek-bzip": "^2.0.0",
     "tslib": "^1.14.1",
+    "typesaurus": "^7.2.0",
     "war3map": "^0.1.1",
     "zlib": "^1.0.5"
   },

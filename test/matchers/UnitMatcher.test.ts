@@ -6,7 +6,7 @@ import {
   UnitMatcher,
   gameObjectFactory,
   splitNameFromLevel,
-} from "../../src/matchers/GameObjectMatcher";
+} from "../../src/matchers/jass/GameObjectMatcher";
 
 describe("GameObjectMatchers utils", () => {
   it("splitNameFromLevel should properly translate item string", () => {

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { ItemDropMatcher } from "../../src/matchers/ItemDropMatcher";
+import { ItemDropMatcher } from "../../src/matchers/jass/ItemDropMatcher";
 
 describe("ItemDropMatcher", () => {
   const TEST_STRING =
