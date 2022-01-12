@@ -8,28 +8,25 @@ Update database of Etales Web DB with data mined from the newest map version
 [![License](https://img.shields.io/npm/l/etales-db-updater.svg)](https://github.com/Palid/etales-db-updater/blob/master/package.json)
 
 <!-- toc -->
-
-- [etales-db-updater](#etales-db-updater)
-- [Usage](#usage)
-- [Commands](#commands)
+* [etales-db-updater](#etales-db-updater)
+* [Usage](#usage)
+* [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g etales-db-updater
 $ etales-db-updater COMMAND
 running command...
 $ etales-db-updater (-v|--version|version)
-etales-db-updater/0.0.0 darwin-x64 node-v16.2.0
+etales-db-updater/0.0.0 darwin-x64 node-v17.2.0
 $ etales-db-updater --help [COMMAND]
 USAGE
   $ etales-db-updater COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 # Commands

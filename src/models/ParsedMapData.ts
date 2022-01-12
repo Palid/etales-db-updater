@@ -1,5 +1,5 @@
 import { Line } from "../matchers/Line";
-import type { MPQMapData } from "mpq-reader";
+import { files, MPQMapData } from "../mpq-reader";
 import {
   CreepTypeMatcher,
   GameObjectData,
@@ -14,6 +14,9 @@ import { getStringsById, matchStringsLines } from "../matchers/StringMatcher";
 import { ObjectsObject } from "war3map";
 import { IDS_MAPPING } from "./War3Types";
 
+import { writeFileSync } from "fs";
+import {resolve} from 'path'
+
 export class ParsedMapData {
   itemDropData: Map<string, Line<ItemDropData>>;
   items: Map<string, Line<GameObjectData>>;
@@ -26,6 +29,12 @@ export class ParsedMapData {
 
   constructor(mpq: MPQMapData) {
     const { itemDrop, item, creepType } = this.parseJass(mpq.jass);
+
+    if (process.env.DEBUG !== undefined) {
+      writeFileSync(resolve("./unpacked", files.strings), mpq.strings);
+      writeFileSync(resolve("./unpacked", files.jass), mpq.jass);
+    }
+
 
     this.itemDropData = itemDrop;
     this.items = item;

@@ -5,7 +5,7 @@ import { TextDecoder } from "util";
 
 const { FS, MPQ } = require("@wowserhq/stormjs");
 
-const files = {
+export const files = {
   strings: "war3map.wts",
   jass: "war3map.j",
   items: "war3map.w3t",
